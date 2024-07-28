@@ -1,0 +1,73 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRIS ML Project</title>
+    <link rel="stylesheet" href="../static/style.css">
+  
+</head>
+<body>
+    <h1>IRIS ML Project</h1>
+    <form id="irisForm">
+        <table bgcolor="cyan">
+            <tr><td>Sepal Length</td><td><input type="text" name="spl"></td></tr>
+            <tr><td>Sepal Width</td><td><input type="text" name="spw"></td></tr>
+            <tr><td>Petal Length</td><td><input type="text" name="ptl"></td></tr>
+            <tr><td>Petal Width</td><td><input type="text" name="ptw"></td></tr>
+            <tr><td colspan="2" align="center">
+                <input type="button" value="Predict type of flower" onclick="predict()">
+            </td></tr>
+        </table>
+    </form>
+
+    <div id="predictionResult">
+        <!-- Result will be displayed here -->
+    </div>
+
+<script>
+  // static/script.js
+
+function predict() {
+    const form = document.getElementById('irisForm');
+    const formData = new FormData(form);
+
+    fetch('/rec', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayPrediction(data.result);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function displayPrediction(prediction) {
+    const predictionResultDiv = document.getElementById('predictionResult');
+    predictionResultDiv.innerHTML = `<p>Prediction: ${prediction}</p>`;
+    
+    // Remove 'show' class to trigger animation
+    predictionResultDiv.classList.remove('show');
+    
+    // Add 'predicted' class to change background color
+    predictionResultDiv.classList.add('predicted');
+    
+    // Add 'show' class again to apply fade-in animation
+    setTimeout(() => {
+        predictionResultDiv.classList.add('show');
+    }, 50); // Delay added for smooth transition
+
+    // Optionally, you can reset the background image after prediction
+    predictionResultDiv.style.backgroundImage = 'none';
+}
+
+    </script>
+  <!-- Include JavaScript to handle form submission -->
+    <script src="../static/script.js"></script>
+</body>
+</html>
